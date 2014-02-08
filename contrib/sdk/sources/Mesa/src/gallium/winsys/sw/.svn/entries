@@ -1,0 +1,55 @@
+10
+
+dir
+4560
+svn://kolibrios.org/contrib/sdk/sources/Mesa/src/gallium/winsys/sw
+svn://kolibrios.org
+
+
+
+2013-12-15T08:37:16.727618Z
+4358
+Serge
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a494cfbc-eb01-0410-851d-a64ba20cac60
+
+wayland
+dir
+
+android
+dir
+
+wrapper
+dir
+
+gdi
+dir
+
+fbdev
+dir
+
+hgl
+dir
+
+null
+dir
+
+dri
+dir
+
+xlib
+dir
+

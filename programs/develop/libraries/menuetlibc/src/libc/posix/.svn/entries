@@ -1,0 +1,104 @@
+10
+
+dir
+4560
+svn://kolibrios.org/programs/develop/libraries/menuetlibc/src/libc/posix
+svn://kolibrios.org
+
+
+
+2011-03-06T07:42:06.076381Z
+1901
+serge
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+a494cfbc-eb01-0410-851d-a64ba20cac60
+
+fnmatch
+dir
+
+stdio
+dir
+
+utime
+dir
+
+glob
+dir
+
+dirent
+dir
+
+grp
+dir
+
+pwd
+dir
+
+setjmp
+dir
+
+unistd
+dir
+
+fcntl
+dir
+
+regex
+dir
+
+utsname
+dir
+
+Makefile
+file
+
+
+
+
+2014-02-07T23:32:40.000000Z
+1d22d684066a1db80aa381449a55866e
+2011-02-21T13:30:08.479604Z
+1882
+clevermouse
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+837
+
+signal
+dir
+
+sys
+dir
+

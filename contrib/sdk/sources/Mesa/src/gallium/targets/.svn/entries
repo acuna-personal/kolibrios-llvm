@@ -1,0 +1,232 @@
+10
+
+dir
+4560
+svn://kolibrios.org/contrib/sdk/sources/Mesa/src/gallium/targets
+svn://kolibrios.org
+
+
+
+2013-12-15T08:37:16.727618Z
+4358
+Serge
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a494cfbc-eb01-0410-851d-a64ba20cac60
+
+xorg-radeonsi
+dir
+
+vdpau-radeonsi
+dir
+
+Makefile.in
+file
+
+
+
+
+2014-02-07T23:32:50.000000Z
+28d58d8583b94d8d44d92b73859aafe6
+2013-12-15T08:37:16.727618Z
+4358
+Serge
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+27609
+
+libgl-xlib
+dir
+
+haiku-softpipe
+dir
+
+libgl-gdi
+dir
+
+dri-vmwgfx
+dir
+
+graw-xlib
+dir
+
+dri-nouveau
+dir
+
+xorg-nouveau
+dir
+
+vdpau-nouveau
+dir
+
+dri-ilo
+dir
+
+xvmc-r300
+dir
+
+dri-r300
+dir
+
+pipe-loader
+dir
+
+xvmc-r600
+dir
+
+dri-i915
+dir
+
+dri-r600
+dir
+
+xvmc-softpipe
+dir
+
+SConscript.dri
+file
+
+
+
+
+2014-02-07T23:32:50.000000Z
+64dabd01955e81dea2877d821bcfacd7
+2013-12-15T08:37:16.727618Z
+4358
+Serge
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1565
+
+dri-radeonsi
+dir
+
+opencl
+dir
+
+xa-vmwgfx
+dir
+
+dri-freedreno
+dir
+
+osmesa
+dir
+
+egl-static
+dir
+
+xvmc-nouveau
+dir
+
+dri-swrast
+dir
+
+vdpau-r300
+dir
+
+graw-gdi
+dir
+
+xorg-r600
+dir
+
+xorg-i915
+dir
+
+vdpau-r600
+dir
+
+gbm
+dir
+
+vdpau-softpipe
+dir
+
+graw-null
+dir
+
+Makefile.am
+file
+
+
+
+
+2014-02-07T23:32:50.000000Z
+b4108b34701b77115a715e88904ff2cc
+2013-12-15T08:37:16.727618Z
+4358
+Serge
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2695
+

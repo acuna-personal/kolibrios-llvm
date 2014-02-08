@@ -1,0 +1,92 @@
+10
+
+dir
+4560
+svn://kolibrios.org/contrib/sdk/sources/Mesa/include
+svn://kolibrios.org
+
+
+
+2014-01-24T23:17:29.364036Z
+4525
+Serge
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a494cfbc-eb01-0410-851d-a64ba20cac60
+
+GL
+dir
+
+KHR
+dir
+
+c99
+dir
+
+EGL
+dir
+
+GLES
+dir
+
+pci_ids
+dir
+
+GLES2
+dir
+
+VG
+dir
+
+GLES3
+dir
+
+c99_compat.h
+file
+
+
+
+
+2014-02-07T23:32:46.000000Z
+e103cd6a36d3635a9079eab212d9a286
+2013-12-15T08:37:16.727618Z
+4358
+Serge
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+4168
+
+CL
+dir
+

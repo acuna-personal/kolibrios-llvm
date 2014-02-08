@@ -1,0 +1,70 @@
+10
+
+dir
+4560
+svn://kolibrios.org/contrib/sdk/sources
+svn://kolibrios.org
+
+
+
+2014-01-29T12:35:00.987302Z
+4548
+Serge
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a494cfbc-eb01-0410-851d-a64ba20cac60
+
+render
+dir
+
+eglut
+dir
+
+newlib
+dir
+
+zlib
+dir
+
+freetype
+dir
+
+ffmpeg
+dir
+
+Mesa
+dir
+
+libsupc++
+dir
+
+gcc_eh
+dir
+
+libdrm
+dir
+
+libpng
+dir
+
+pixman
+dir
+
+cairo
+dir
+
+Intel-2D
+dir
+

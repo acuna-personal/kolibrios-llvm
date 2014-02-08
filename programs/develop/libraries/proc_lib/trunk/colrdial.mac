@@ -1,0 +1,273 @@
+;*****************************************************************************
+; Macro for use Color Dialog - for Kolibri OS
+; Copyright (c) 2013, Marat Zakiyanov aka Mario79, aka Mario
+; All rights reserved.
+;
+; Redistribution and use in source and binary forms, with or without
+; modification, are permitted provided that the following conditions are met:
+;	 * Redistributions of source code must retain the above copyright
+;	   notice, this list of conditions and the following disclaimer.
+;	 * Redistributions in binary form must reproduce the above copyright
+;	   notice, this list of conditions and the following disclaimer in the
+;	   documentation and/or other materials provided with the distribution.
+;	 * Neither the name of the <organization> nor the
+;	   names of its contributors may be used to endorse or promote products
+;	   derived from this software without specific prior written permission.
+;
+; THIS SOFTWARE IS PROVIDED BY Marat Zakiyanov ''AS IS'' AND ANY
+; EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+; WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+; DISCLAIMED. IN NO EVENT SHALL <copyright holder> BE LIABLE FOR ANY
+; DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+; (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+; ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+;*****************************************************************************
+;---------------------------------------------------------------------
+;Some documentation for memory
+;
+;area name db 'FFFFFFFF_color_dialog',0 ; FFFFFFFF = PID
+;
+; communication area data
+; flag  ; +0
+; dw 0   ; 0 - empty, 1 - OK, color selected
+;          2 - use another method/not found program, 3 - cancel
+;
+; type of dialog:  0-Palette&Tone
+; dw 0 ; +2
+;
+; window X size ; +4
+; dw 0
+;
+; window X position ; +6 
+; dw 0
+;
+; window y size ; +8
+; dw 0
+;
+; window Y position ; +10
+; dw 0
+;
+; ColorDialog WINDOW SLOT ; +12
+; dd 0
+;
+; Color type ; +16
+; dd 0
+;
+; Color value ; +20
+; dd 0
+;---------------------------------------------------------------------
+;*****************************************************************************
+macro	ColorDialog_exit
+{
+popa
+ret 4
+}
+;*****************************************************************************
+macro	use_ColorDialog
+{
+ColorDialog:
+cd_type			equ dword [ebp]	; 0-Palette&Tone
+cd_procinfo		equ dword [ebp+4] ; Process info area for function 9
+cd_com_area_name	equ dword [ebp+8] ; Name for shared area
+cd_com_area		equ dword [ebp+12] ; Adress of shared area
+cd_start_path		equ dword [ebp+16] ; Location path to ColorDialog
+cd_draw_window		equ dword [ebp+20] ; Adress of procedure - draw_window
+cd_status		equ dword [ebp+24] ; 0-Cancel, 1-Get color OK, 2-Use alternatives
+cd_x_size		equ [ebp+28] ; Window X size
+cd_x_start		equ [ebp+30] ; Window X position
+cd_y_size		equ [ebp+32] ; Window y size
+cd_y_start		equ [ebp+34] ; Window Y position
+cd_color_type		equ [ebp+36] ; 0- RGB, 1 or other - reserved
+cd_color		equ [ebp+40] ; Selected color
+;*****************************************************************************
+.init:
+	pusha
+	mov   ebp,dword [esp+36]
+	mcall	9,cd_procinfo,-1
+	mov	ebx,[ebx+30]
+	mov	edi,cd_com_area_name
+	add	edi,7
+	std
+	mov	ecx,4
+@@:
+	mov	al,bl
+	and	al,1111b
+	add	al,0x30
+	stosb
+	mov	al,bl
+	shr	al,4
+	and	al,1111b
+	add	al,0x30
+	stosb
+	shr	ebx,8
+	dec	ecx
+	jnz	@r
+	cld
+	
+	mcall	68,22,cd_com_area_name,4096,0x09
+	mov	cd_com_area,eax
+	
+ColorDialog_exit
+;*****************************************************************************
+;*****************************************************************************
+.start:
+	pusha
+	mov   ebp,dword [esp+36]
+	
+	mov	eax,cd_com_area
+	test	eax,eax
+	jz	.1
+	mov	ebx,cd_type
+	mov	[eax+2],bx
+	
+	mov	[eax],word 2	; start ColorDialog
+
+	pusha
+	mcall	9,cd_procinfo,-1
+
+	mov	eax,[ebx+42] ;main window x size
+	shr	eax,1
+	add	eax,[ebx+34] ; main window x start
+	mov	cx,cd_x_size
+	shr	cx,1
+	sub	ax,cx
+	test	ax,cx
+	test	eax,0x8000
+	jz	@f
+	xor	eax,eax
+@@:
+	mov	cd_x_start,ax
+
+	mov	eax,[ebx+46] ;main window y size
+	shr	eax,1
+	add	eax,[ebx+38] ; main window y start
+	mov	cx,cd_y_size
+	shr	cx,1
+	sub	ax,cx
+	test	eax,0x8000
+	jz	@f
+	xor	eax,eax
+@@:
+	mov	cd_y_start,ax
+	popa
+
+	mov	ebx,dword cd_x_size
+	mov	[eax+4],ebx
+	mov	ebx,dword cd_y_size
+	mov	[eax+8],ebx
+	
+;----------------------------------------------
+	mov	ebx,cd_procinfo
+	xor	eax,eax
+	mov	edi,ebx
+	mov	ecx,6
+	cld
+	rep	stosd
+	mov	[ebx],dword 7
+	mov	eax,cd_com_area_name
+	mov	[ebx+8],eax
+	mov	eax,cd_start_path
+	mov	[ebx+21],eax
+	mcall	70
+
+	shr	eax,31
+	test	eax,eax
+	jnz	.1
+;----------------------------------------------
+.still:
+; The main window of application sometimes
+; is not present the really. For this reason
+; not use func 10 and 23, because event 1
+; is not cleared without call of func 0.
+; In this case is suitable only func 5 and 11,
+; or 68.1 and 11 for better response.
+	mcall	68,1
+	mcall	5,10 ; because OS uses a new scheduler for kernel(SVN r.3534)
+	mcall	11
+	cmp	eax,1
+	je	.draw
+	cmp	eax,2
+	je	.key
+	cmp	eax,3
+	je	.button
+	jmp	.no_draw
+.key:
+	mcall	2
+	jmp	.no_draw
+.button:
+	mcall	17
+	jmp	.no_draw
+;----------------------------------------------
+.draw:
+	pusha
+	call	cd_draw_window
+	popa
+;----------------------------------------------
+	pusha
+	call	.prepare_PID
+	jz	@f
+
+	mov	ecx,eax	; WINDOW SLOT
+	mcall	18,7
+	cmp	eax,ecx ; compare ACTIVE and WINDOW SLOT 
+	jne	@f
+
+	mov	eax,cd_com_area
+	mov	ecx,[eax+12]
+	test	ecx,ecx
+	jz	@f
+	mcall	18,3
+@@:
+	popa
+;----------------------------------------------
+.no_draw:
+	mov	eax,cd_com_area
+	movzx	ebx,word [eax]
+	test	ebx,ebx
+	jz	.still
+	cmp	ebx,3
+	je	.2
+	cmp	ebx,1
+	jne	.still
+;----------------------------------------------
+; copy color type and value from shared area
+	mov	eax,cd_com_area
+	mov	ebx,[eax+16]
+	mov	cd_color_type,ebx
+	mov	ebx,[eax+20]
+	mov	cd_color,ebx
+
+	mov	cd_status,1
+;----------------------------------------------
+	jmp	.3
+.2:
+	mov	cd_status,0
+	jmp	.3
+.1:
+	mov	cd_status,2
+.3:
+	mov	eax,cd_com_area
+	mov	ebx,[eax+4]
+	mov	cd_x_size,ebx
+	mov	ebx,[eax+8]
+	mov	cd_y_size, ebx
+
+	call	.prepare_PID
+	jz	@f
+	mov	ecx,eax	; WINDOW SLOT
+	mcall	18,3
+@@:
+ColorDialog_exit
+;----------------------------------------------
+.prepare_PID:
+	mcall	9,cd_procinfo,-1
+	mov	ecx,[ebx+30]	; PID
+	mcall	18,21
+	test	eax,eax
+	ret
+;----------------------------------------------
+}
+;*****************************************************************************

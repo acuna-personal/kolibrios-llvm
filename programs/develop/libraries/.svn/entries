@@ -1,0 +1,106 @@
+10
+
+dir
+4560
+svn://kolibrios.org/programs/develop/libraries
+svn://kolibrios.org
+
+
+
+2014-01-28T11:55:07.339666Z
+4542
+IgorA
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+a494cfbc-eb01-0410-851d-a64ba20cac60
+
+http
+dir
+
+gblib
+dir
+
+fontslib
+dir
+
+truetype
+dir
+
+qs
+dir
+
+base64
+dir
+
+menuetlibc
+dir
+
+libcrash
+dir
+
+pixlib
+dir
+
+proc_lib
+dir
+
+network
+dir
+
+charset
+dir
+
+crypt_des
+dir
+
+framework
+dir
+
+msgbox
+dir
+
+libmpg123
+dir
+
+console
+dir
+
+buf2d
+dir
+
+vector
+dir
+
+wword
+dir
+
+libs-dev
+dir
+
+ufmod
+dir
+
+libGUI
+dir
+
+iconv
+dir
+
+box_lib
+dir
+
+sorter
+dir
+

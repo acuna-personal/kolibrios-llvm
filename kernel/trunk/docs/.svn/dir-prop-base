@@ -1,0 +1,11 @@
+K 10
+svn:ignore
+V 41
+*.mnt
+lang.inc
+*.bat
+out.txt
+scin*
+*.obj
+
+END

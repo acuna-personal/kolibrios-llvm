@@ -1,0 +1,161 @@
+﻿#0    **** MAIN ****
+Giochi             >      /@1
+Demo               >      /@4
+Grafica            >      /@6
+Multimedia         >      /@7
+Sviluppo           >      /@8
+Sistema            >      /@10
+Data processing    >      /@14
+Network            >      /@15
+Altro              >      /@18
+Aiuto                     /sys/docpack
+Esegui applicazione       /sys/run
+Spegni                    /sys/end
+#1    **** GAMES ****
+Giochi di logica   >      /@2
+Arcade             >      /@3
+Memory                    /sys/games/mblocks
+FreeCell                  /sys/games/freecell
+Pipes                     /sys/games/pipes
+Kosilka                   /sys/games/kosilka
+RockeT ForceS             /sys/games/rforces
+Trova i numeri            /sys/games/FindNumbers
+#2 **** LOGICAL GAMES ****
+C4                        /sys/games/c4
+Gioco del quindici        /sys/games/15
+Campo minato              /sys/games/mine
+Just Clicks               /sys/games/clicks
+Checkers                  /sys/games/checkers
+SQ_GAME                   /sys/games/sq_game
+Color Lines               /sys/games/lines
+Flood-it!                 /sys/games/flood-it
+MegaMaze                  /sys/games/megamaze
+Battaglia navale          /sys/games/sw
+Sudoku                    /sys/games/sudoku
+Go-moku                   /sys/games/gomoku
+Reversi                   /sys/games/reversi
+#3 **** ARCADES ****
+Tetris                    /sys/games/tetris
+Pong                      /sys/games/pong
+New Pong                  /sys/games/pong3
+Red Square                /sys/games/rsquare
+Xonix                     /sys/games/xonix
+ArcanII                   /sys/games/arcanii
+Phenix                    /sys/games/phenix
+Snake                     /sys/games/snake
+#4    **** DEMOS ****
+3D                 >      /@5
+Cerchio                   /sys/demos/circle
+Frattale                  /sys/demos/tinyfrac
+Demo Colori               /sys/demos/colorref
+Occhi                     /sys/demos/eyes
+Vortice                   /sys/demos/tube
+Plasma                    /sys/demos/plasma
+Moveback                  /sys/demos/movback
+Life                      /sys/demos/life2
+TranTest                  /sys/demos/trantest
+WEB                       /sys/demos/web
+Fuochi d'artificio        /sys/demos/firework
+UnvWater                  /sys/demos/unvwater
+#5  **** 3D demos ****
+ScreenSaver               /sys/3d/crownscr
+Labirinto 3D              /sys/3d/free3d04
+Cuore 3D                  /sys/3d/3dsheart
+View3DS                   /sys/3d/view3ds
+CubeLine                  /sys/3d/cubeline
+Gears                     /sys/3d/gears
+3D-waved area             /sys/3d/3dwav
+#6   **** GRAPHICS ****
+Image viewer KIV          /sys/media/kiv
+Image viewer zSea         /KolibriOS/media/zsea/zsea
+Animage                   /sys/media/animage
+Palitra                   /sys/media/palitra
+#7   **** MULTIMEDIA ****
+Fplay - video             /KolibriOS/media/fplay-full
+MidAMP                    /sys/media/midamp
+CD player                 /sys/media/cdp
+#8    **** PROGRAMMING ****
+Esempi             >      /@9
+Gestore di archivi KPack  /sys/kpack
+Compilatore FASM          /sys/develop/fasm
+Debug Board               /sys/develop/board
+Debugger                  /sys/develop/mtdbg
+Hex2Dec2Bin               /sys/develop/h2d2b
+Codici ASCII              /sys/develop/keyascii
+SCAN-codes                /sys/develop/scancode
+#9    **** EXAMPLES ****
+Thread                    /sys/develop/thread
+IPC                       /sys/develop/ipc
+Color slider              /sys/demos/cslide
+Esempio Console 1         /sys/develop/testcon2
+Esempio Console 2         /sys/develop/test_gets
+Esempio Message Boxes     /sys/demos/use_mb
+#10    **** SYSTEM ****
+Impostazioni       >      /@11
+Sensori di sistema >      /@12
+Work with files    >      /@13
+Testing            >      /@19
+Opzioni Accessibilità >      /@20
+Debug board               /sys/develop/board
+Terminal                  /sys/terminal
+#11    **** SETTINGS ****
+Device                    /sys/setup
+Generatore di sfondi      /sys/media/palitra
+Colori e temi             /sys/desktop
+MyKey                     /sys/mykey
+Video mode for ATI        /sys/vmode
+#12    **** SYSTEM SENSORS ****
+Gestore processi          /sys/cpu
+PCI devices               /sys/pcidev
+Test graphics speed       /sys/mgb
+CPUID                     /sys/cpuid
+Ghost Monitor             /sys/gmon
+K. Bus disconnected       /sys/kbd
+HDD informer              /sys/hdd_info
+#13  **** WORK WITH FILES ****
+KFAR                      /sys/File Managers/kfar
+KFM                       /sys/File Managers/kfm
+Eolite                    /sys/File Managers/Eolite
+Virtual disks             /sys/tmpdisk
+SHELL console             /sys/shell
+Salva immagine RD         /sys/rdsave
+#14 **** DATA PROCESSING ****
+Calcolatrice              /sys/calc
+Tinypad                   /sys/tinypad
+TextEdit                  /sys/develop/t_edit
+Table Processor           /sys/table
+Graph builder             /sys/graph
+Hex-Editor                /sys/develop/heed
+#15    **** NET ****
+Servers            >      /@16
+Clients            >      /@17
+Zero-Config               /sys/network/zeroconf
+Network Config            /sys/network/netcfg
+Network status            /sys/network/netstat
+#16    **** SERVERS ****
+Demone FTP                /sys/network/ftpd
+#17   **** CLIENTS ****
+Client IRC                /sys/network/ircc
+Client FTP                /sys/network/ftpc
+Client TFTP               /sys/network/tftpc
+Ping                      /sys/network/ping
+Client Telnet             /sys/network/telnet
+Client Synergy            /sys/network/synergyc
+DNS lookup                /sys/network/nslookup
+Internet downloader       /sys/network/downloader
+Text-based browser        /sys/htmlv
+#18    **** OTHER ****
+Orologio analogico        /sys/demos/aclock
+Orologio binario          /sys/demos/bcdclk
+Timer                     /sys/demos/timer
+ScreenShoter              /sys/scrshoot
+Calendario                /sys/calendar
+Lettore RTF               /sys/rtfread
+#19    **** SYSTEM TESTS ****
+Protection test           /sys/test
+Test Monitor              /sys/disptest
+#20    **** SYSTEM SPECIAL ****
+Lente di ingrandimento    /sys/magnify
+Tastiera da schermo       /sys/zkey
+Tavola caratteri          /sys/ASCIIVju
+##

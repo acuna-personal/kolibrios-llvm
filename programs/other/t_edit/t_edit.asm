@@ -1,0 +1,594 @@
+;Огромная благодарность всем, кто помогал: кодом/советом/дизайном ...
+
+use32
+  org 0x0
+  db 'MENUET01' ;идентиф. исполняемого файла всегда 8 байт
+  dd 0x01
+  dd start
+  dd i_end ; размер приложения
+  dd mem
+  dd stacktop
+  dd file_name ; command line
+  dd sys_path
+
+MAX_COLOR_WORD_LEN equ 40
+maxChars equ 100002 ;(...+2)
+BUF_SIZE equ 4096 ;buffer for copy|paste
+maxSyntaxFileSize equ 410000
+TOOLBAR_ICONS_SIZE equ 1200*20
+
+include '../../proc32.inc'
+;include '../../config.inc'
+include '../../macros.inc'
+include '../../dll.inc'
+include '../../develop/libraries/box_lib/load_lib.mac'
+include '../../develop/libraries/box_lib/trunk/box_lib.mac'
+include '../../system/desktop/trunk/kglobals.inc'
+include '../../system/desktop/trunk/unpacker.inc'
+include 'lang.inc'
+
+include 't_data.inc'
+include 'strlen.inc'
+include 't_draw.inc' ;draw main window functions
+include 't_button.inc' ;text work functions
+include 'wnd_k_words.inc'
+
+@use_library_mem mem.Alloc,mem.Free,mem.ReAlloc,dll.Load
+
+
+;Макрос для загрузки изображений с использованием библиотеки libimg.obj
+;для использования макроса нужны переменные:
+; - run_file_70 FileInfoBlock
+; - image_data dd 0
+macro load_image_file path,buf,size
+{
+	;path - может быть переменной или строковым параметром
+	if path eqtype '' ;проверяем задан ли строкой параметр path
+		jmp @f
+			local .path_str
+			.path_str db path ;формируем локальную переменную
+			db 0
+		@@:
+		;32 - стандартный адрес по которому должен быть буфер с системным путем
+		copy_path .path_str,[32],file_name,0x0
+	else
+		copy_path path,[32],file_name,0x0 ;формируем полный путь к файлу изображения, подразумеваем что он в одной папке с программой
+	end if
+
+	stdcall mem.Alloc, dword size ;выделяем память для изображения
+	mov [buf],eax
+
+	mov eax,70 ;70-я функция работа с файлами
+	mov [run_file_70.Function], 0
+	mov [run_file_70.Position], 0
+	mov [run_file_70.Flags], 0
+	mov [run_file_70.Count], dword size
+	m2m [run_file_70.Buffer], [buf]
+	mov byte[run_file_70+20], 0
+	mov [run_file_70.FileName], file_name
+	mov ebx,run_file_70
+	int 0x40 ;загружаем файл изображения
+	cmp ebx,0xffffffff
+	je @f
+		;определяем вид изображения и переводим его во временный буфер image_data
+		stdcall dword[img_decode], dword[buf],ebx,0
+		mov dword[image_data],eax
+		;преобразуем изображение к формату rgb
+		stdcall dword[img_to_rgb2], dword[image_data],dword[buf]
+		;удаляем временный буфер image_data
+		stdcall dword[img_destroy], dword[image_data]
+	@@:
+}
+
+image_data dd 0 ;указатель на временную память. для нужен преобразования изображения
+icon_tl_sys dd 0 ;указатель на память для хранения системных иконок
+
+align 4
+start:
+	mcall 48,3,sc,sizeof.system_colors
+
+	mcall 68,11
+	or eax,eax
+	jz button.exit
+
+	mcall 66,1,1 ;scan code
+	mcall 40,0xC0000027
+
+	mov esi,file_name
+	call strlen
+	mov ecx,eax
+	mov edi,openfile_path
+	cld
+	rep movsb ;копируем имя файла в буфер openfile_path
+
+load_libraries l_libs_start,load_lib_end
+
+;проверка на сколько удачно загузились библиотеки
+mov	ebp,lib0
+.test_lib_open:
+	cmp	dword [ebp+ll_struc_size-4],0
+	jz	@f
+	mcall -1 ;exit not correct
+@@:
+	add ebp,ll_struc_size
+	cmp ebp,load_lib_end
+	jl .test_lib_open
+
+;---------------------------------------------------------------------
+	stdcall [ted_init], tedit0
+	stdcall dword[tl_data_init], tree1
+
+; OpenDialog initialisation
+	stdcall [OpenDialog_Init],OpenDialog_data
+	mov eax,[sc.work_button_text]
+	mov [PathShow_data_1.font_color],eax
+	mov eax,[sc.work_button]
+	mov [PathShow_data_1.background_color],eax
+
+; init toolbar file
+	load_image_file 'te_icon.png', bmp_icon,TOOLBAR_ICONS_SIZE*2 ;умножение на 2 для серых кнопок
+	mov eax,[bmp_icon]
+	add eax,TOOLBAR_ICONS_SIZE
+	stdcall img_to_gray, [bmp_icon],eax,(TOOLBAR_ICONS_SIZE)/3
+;---------------------------------------------------------------------
+; читаем файл с курсорами и линиями
+	load_image_file 'tl_sys_16.png', icon_tl_sys,54+3*256*13
+	mov eax,dword[icon_tl_sys]
+	mov dword[tree1.data_img_sys],eax
+;---------------------------------------------------------------------
+; читаем файл с иконками узлов
+	load_image_file 'tl_nod_16.png', icon_tl_sys,54+3*256*2
+	mov eax,dword[icon_tl_sys]
+	mov dword[tree1.data_img],eax
+;------------------------------------------------------------------------------
+  copy_path fn_syntax_dir,sys_path,file_name,0x0 ;берем путь к папке с файлами синтаксиса
+  mov eax,70
+  mov ebx,tree_file_struct
+  int 0x40
+
+cmp ebx,-1
+je .end_dir_init
+
+  mov eax,dir_mem
+  add eax,32+4+1+3+4*6+8
+mov ecx,ebx
+@@:
+  cmp byte[eax],'.' ;фильтруем файлы с именами '.' и '..'
+  je .filter
+    ;0x10000 ;1*2^16 - где 1 номер иконки с книгой
+    stdcall dword[tl_node_add], eax,0x10000, tree1
+
+    stdcall dword[tl_cur_next], tree1
+  .filter:
+  add eax,304
+  loop @b
+  stdcall dword[tl_cur_beg],tree1 ;ставим курсор на начало списка
+.end_dir_init:
+
+;--- load ini file ---
+	copy_path ini_name,sys_path,file_name,0
+	;window startup pozition
+	stdcall dword[ini_get_int],file_name,ini_sec_window,key_window_l,ini_def_window_l
+	mov word[wnd_s_pos+2],ax
+	stdcall dword[ini_get_int],file_name,ini_sec_window,key_window_w,ini_def_window_w
+	mov word[wnd_s_pos],ax
+	stdcall dword[ini_get_int],file_name,ini_sec_window,key_window_t,ini_def_window_t
+	mov word[wnd_s_pos+6],ax
+	stdcall dword[ini_get_int],file_name,ini_sec_window,key_window_h,ini_def_window_h
+	mov word[wnd_s_pos+4],ax
+	;scrool type
+	stdcall dword[ini_get_int],file_name,ini_sec_window,key_scroll_type,ini_def_scroll_type
+	mov [wScr.type],eax
+	mov [hScr.type],eax
+	mov [ws_dir_lbox.type],eax
+    mov [w_scr_t3.type],eax
+	;symbol size
+	stdcall dword[ini_get_int],file_name,ini_sec_window,key_symbol_w,ini_def_symbol_w
+	mov dword[tedit0.rec.width],eax
+	stdcall dword[ini_get_int],file_name,ini_sec_window,key_symbol_h,ini_def_symbol_h
+	mov dword[tedit0.rec.height],eax
+	lea eax,[eax+eax*2]
+	mov dword[tedit0.rec.top],eax
+	;файловые расширения
+	xor edx,edx
+	mov ebx,synt_auto_open
+	@@:
+		;берем имя файла
+		stdcall dword[ini_get_str],file_name,ini_sec_options,key_synt_file,ebx,32,ini_def_synt_f
+		cmp byte[ebx],0
+		je @f
+		inc byte[key_synt_file.numb]
+		add ebx,32
+		;берем расширения
+		stdcall dword[ini_get_str],file_name,ini_sec_options,key_synt_ext,ebx,32,ini_def_synt_f
+		inc byte[key_synt_ext.numb]
+		add ebx,32
+		inc edx
+		cmp edx,max_synt_auto_open
+		jl @b
+	@@:
+
+;--- load color option file ---
+	mov ebx,dword[fn_col_option]
+	call open_unpac_synt_file
+
+;--- get cmd line ---
+	cmp byte[openfile_path+3],0 ;openfile_path
+	je @f ;if file names exist
+		mov esi,openfile_path
+		call strlen ;eax=strlen
+		call but_no_msg_OpenFile
+	@@:
+
+
+
+align 4
+red_win:
+  call draw_window
+
+align 4
+still:
+	mcall 10
+
+	cmp al,1 ;изменилось положение окна
+	jz red_win
+	cmp al,2
+	jz key
+	cmp al,3
+	jz button
+	cmp al,6 ;мышь
+	jne @f
+		jmp mouse
+	@@:
+	jmp still
+
+align 4
+draw_window:
+	mcall 12,1
+
+	mov edx,[sc.work]
+	or  edx,0x73000000
+	mov edi,hed
+	mcall 0,dword[wnd_s_pos],dword[wnd_s_pos+4]
+
+	mcall 9,procinfo,-1
+	mov edi,tedit0 ;значение edi нужно для EvSize и ted_wnd_t
+	call EvSize
+
+	mov eax,13 ;верхний прямоугольник, для очистки верхней панели
+	xor ebx,ebx
+	mov ecx,ted_wnd_t
+	mov bx,word[procinfo.client_box.width]
+	inc bx
+	int 0x40
+
+	mov eax,4
+	mov ebx,185*65536+9
+	mov ecx,[sc.work_text]
+	or  ecx,0x80000000
+	mov edx,txtFile
+	int 0x40
+
+	stdcall [PathShow_draw], dword PathShow_data_1
+	stdcall [menu_bar_draw], dword menu_data_1
+
+	call draw_but_toolbar
+
+	stdcall [ted_draw], tedit0
+
+	mcall 12,2
+	ret
+
+align 4
+mouse:
+	stdcall [ted_mouse], tedit0
+
+	cmp byte[tedit0.panel_id],TED_PANEL_FIND ;if not panel
+	jne @f
+		stdcall [edit_box_mouse], dword edit2
+	@@:
+	cmp byte[tedit0.panel_id],TED_PANEL_SYNTAX ;if not panel
+	jne .menu_bar_1 ;@f
+	stdcall [tl_mouse], tree1
+;-----------------------------------------------
+.menu_bar_1:
+	mov [menu_data_1.get_mouse_flag],1
+; mouse event for Menu 1
+	stdcall [menu_bar_mouse],dword menu_data_1
+	cmp dword[menu_data_1.click],1
+	jne .mnu_1
+	cmp dword[menu_data_1.cursor_out],4
+	je button.exit	
+	cmp dword[menu_data_1.cursor_out],3
+	jne @f
+		call ted_but_save_file
+	@@:
+	cmp dword[menu_data_1.cursor_out],2
+	jne @f
+		call ted_but_open_file
+	@@:
+	cmp dword[menu_data_1.cursor_out],1
+	jne @f
+		call ted_but_new_file
+	@@:
+.mnu_1:
+	jmp still
+;---------------------------------------------------------------------
+
+;output:
+; ah = symbol
+align 4
+proc KeyConvertToASCII, table:dword
+  push ebx
+  mov ebx,dword[table] ;convert scan to ascii
+  ror ax,8
+  xor ah,ah
+  add bx,ax
+  mov ah,byte[ebx]
+  pop ebx
+  ret
+endp
+
+align 4
+key:
+  mcall 66,3 ;66.3 получить состояние управляющих клавиш
+  xor esi,esi
+  mov ecx,1
+  test al,0x03 ;[Shift]
+  jz @f
+    mov cl,2
+    or esi,KM_SHIFT
+  @@:
+  test al,0x0c ;[Ctrl]
+  jz @f
+    or esi,KM_CTRL
+  @@:
+  test al,0x30 ;[Alt]
+  jz @f
+    mov cl,3
+    or esi,KM_ALT
+  @@:
+  test al,0x80 ;[NumLock]
+  jz @f
+    or esi,KM_NUMLOCK
+  @@:
+
+  mcall 26,2,,conv_tabl ;26.2 получить раскладку клавиатуры
+  mcall 2 ;получаем код нажатой клавиши
+  stdcall [tl_key], tree1
+
+  test word [edit2.flags],10b;ed_focus ; если не в фокусе, выходим
+  je @f
+    cmp ah,0x80 ;if key up
+    ja still
+    cmp ah,42 ;[Shift] (left)
+    je still
+    cmp ah,54 ;[Shift] (right)
+    je still
+    cmp ah,56 ;[Alt]
+    je still
+    cmp ah,29 ;[Ctrl]
+    je still
+    cmp ah,69 ;[Pause Break]
+    je still
+
+    stdcall KeyConvertToASCII, dword conv_tabl
+    stdcall [edit_box_key], dword edit2
+    jmp still
+  @@:
+
+  stdcall [ted_key], tedit0, conv_tabl,esi
+  jmp still
+
+align 4
+button:
+;  cmp [menu_active],1 ;если нажали меню, то сначала реакция на меню
+;  jne @f ;mouse.menu_bar_1
+;    mov [menu_active],0
+;    jmp still
+;  @@:
+
+  mcall 17 ;получить код нажатой кнопки
+  cmp ah,3
+  jne @f
+    call ted_but_new_file
+  @@:
+  cmp ah,4
+  jne @f
+    call ted_but_open_file
+  @@:
+  cmp ah,5
+  jne @f
+    call ted_but_save_file
+  @@:
+  cmp ah,6
+  jne @f
+    stdcall [ted_but_select_word], tedit0
+  @@:
+  cmp ah,7
+  jne @f
+    stdcall [ted_but_cut], tedit0
+  @@:
+  cmp ah,8
+  jne @f
+    stdcall [ted_but_copy], tedit0
+  @@:
+  cmp ah,9
+  jne @f
+    stdcall [ted_but_paste], tedit0
+  @@:
+  cmp ah,10
+  jne @f
+    call ted_but_find
+  @@:
+  cmp ah,11
+  jne @f
+    call but_replace
+  @@:
+  cmp ah,12
+  jne @f
+    call but_find_key_w
+  @@:
+  cmp ah,13
+  jne @f
+    stdcall [ted_but_sumb_upper], tedit0
+  @@:
+  cmp ah,14
+  jne @f
+    stdcall [ted_but_sumb_lover], tedit0
+  @@:
+  cmp ah,15
+  jne @f
+    stdcall [ted_but_reverse], tedit0
+  @@:
+  cmp ah,16
+  jne @f
+    stdcall [ted_but_undo], tedit0
+  @@:
+  cmp ah,17
+  jne @f
+    stdcall [ted_but_redo], tedit0
+  @@:
+  cmp ah,18
+  jne @f
+    stdcall but_sumb_invis, tedit0
+  @@:
+  cmp ah,19
+  jne @f
+    stdcall but_k_words_show, tedit0
+  @@:
+  cmp ah,20
+  jne @f
+    stdcall but_synt_show, tedit0
+  @@:
+  cmp ah,21
+  jne @f
+    stdcall [ted_but_convert_by_table],tedit0,tbl_1251_866
+  @@:
+  cmp ah,22
+  jne @f
+    stdcall [ted_but_convert_by_table],tedit0,tbl_866_1251
+  @@:
+
+  cmp ah,200
+  jne @f
+    stdcall ted_but_open_syntax, tedit0
+  @@:
+  cmp ah,201
+  jne @f
+    stdcall [ted_but_find_next], tedit0
+  @@:
+
+  cmp ah,1
+  jne still
+.exit:
+	stdcall [ted_can_save], tedit0
+	cmp al,1
+	jne @f
+		stdcall [mb_create],msgbox_8,thread ;message: save changes in file?
+		jmp still
+	@@:
+	stdcall mem.Free,[bmp_icon]
+	cmp dword[unpac_mem],0
+	je @f
+		stdcall mem.Free,[unpac_mem]
+	@@:
+ 
+	stdcall [ted_delete], tedit0
+	stdcall dword[tl_data_clear], tree1
+	mcall -1 ;выход из программы
+
+PathShow_data_1:
+.type			dd 0	;+0
+.start_y		dw 9	;+4
+.start_x		dw 222	;+6
+.font_size_x		dw 6	;+8	; 6 - for font 0, 8 - for font 1
+.area_size_x		dw 200	;+10
+.font_number		dd 0	;+12	; 0 - monospace, 1 - variable
+.background_flag	dd 1	;+16
+.font_color		dd 0x0	;+20
+.background_color	dd 0xffffff	;+24
+.text_pointer		dd openfile_path	;+28
+.work_area_pointer	dd text_work_area	;+32
+.temp_text_length	dd 0	;+36
+
+edit2 edit_box TED_PANEL_WIDTH-1, 0, 20, 0xffffff, 0xff80, 0xff0000, 0xff, 0x4080, 300, buf_find, mouse_dd, 0
+
+unpac_mem dd 0
+
+if lang eq ru
+  head_f_i:
+  head_f_l db 'Системная ошибка',0
+  err_message_found_lib0 db 'Не найдена библиотека ',39,'box_lib.obj',39,0
+  err_message_import0 db 'Ошибка при импорте библиотеки ',39,'box_lib.obj',39,0
+  err_message_found_lib1 db 'Не найдена библиотека ',39,'msgbox.obj',39,0
+  err_message_import1 db 'Ошибка при импорте библиотеки ',39,'msgbox.obj',39,0
+  err_message_found_lib2 db 'Не найдена библиотека ',39,'proc_lib.obj',39,0
+  err_message_import2 db 'Ошибка при импорте библиотеки ',39,'proc_lib.obj',39,0
+  err_message_found_lib_3 db 'Не найдена библиотека ',39,'libimg.obj',39,0
+  err_message_import_3 db 'Ошибка при импорте библиотеки ',39,'libimg.obj',39,0
+  err_message_found_lib_4 db 'Не найдена библиотека ',39,'libini.obj',39,0
+  err_message_import_4 db 'Ошибка при импорте библиотеки ',39,'libini.obj',39,0
+else
+  head_f_i:
+  head_f_l db 'System error',0
+  err_message_found_lib0 db 'Sorry I cannot found library ',39,'box_lib.obj',39,0
+  err_message_import0 db 'Error on load import library ',39,'box_lib.obj',39,0
+  err_message_found_lib1 db 'Sorry I cannot found library ',39,'msgbox.obj',39,0
+  err_message_import1 db 'Error on load import library ',39,'msgbox.obj',39,0
+  err_message_found_lib2 db 'Sorry I cannot found library ',39,'proc_lib.obj',39,0
+  err_message_import2 db 'Error on load import library ',39,'proc_lib.obj',39,0
+  err_message_found_lib_3 db 'Sorry I cannot found library ',39,'libimg.obj',39,0
+  err_message_import_3 db 'Error on load import library ',39,'libimg.obj',39,0
+  err_message_found_lib_4 db 'Sorry I cannot found library ',39,'libini.obj',39,0
+  err_message_import_4 db 'Error on load import library ',39,'libini.obj',39,0
+end if
+
+;library structures
+l_libs_start:
+	lib0 l_libs lib_name_0, sys_path, file_name, system_dir_0,\
+		err_message_found_lib0, head_f_l, import_box_lib,err_message_import0, head_f_i
+	lib1 l_libs lib_name_1, sys_path, file_name, system_dir_1,\
+		err_message_found_lib1, head_f_l, import_msgbox_lib, err_message_import1, head_f_i
+	lib2 l_libs lib_name_2, sys_path, file_name, system_dir_2,\
+		err_message_found_lib2, head_f_l, import_proclib, err_message_import2, head_f_i
+	lib3 l_libs lib_name_3, sys_path, file_name, system_dir_3,\
+		err_message_found_lib_3, head_f_l, import_libimg, err_message_import_3, head_f_i
+	lib4 l_libs lib_name_4, sys_path, file_name, system_dir_4,\
+		err_message_found_lib_4, head_f_l, import_libini, err_message_import_4, head_f_i
+load_lib_end:
+
+IncludeIGlobals
+i_end:
+	dir_mem rb 32+304*count_of_dir_list_files
+	wnd_s_pos: ;место для настроек стартовой позиции окна
+		rq 1
+	last_open_synt_file rb 32 ;имя последнего подключенного файла синтаксиса
+	buf rb BUF_SIZE ;буфер для копирования и вставки
+	buf_find rb 302 ;буфер для поиска текста
+IncludeUGlobals
+	align 16
+	procinfo process_information
+		rb 1024
+	thread:
+	rb 1024
+    thread_coords:
+	rb 1024
+stacktop:
+	sys_path: ;путь откуда запустился исполняемый файл
+		rb 4096
+	file_name: ;параметры запуска
+		rb 4096
+	syntax_path: ;имя подключаемого файла синтаксиса
+		rb 4096
+	plugin_path:
+		rb 4096
+	openfile_path: ;полный путь к файлу с которым идет работа
+		rb 4096
+	text_work_area: ;путь к файлу, который показывается в окне
+		rb 4096
+	filename_area: ;имя файла для диалога открытия/закрытия
+		rb 256
+	file_info:
+		rb 40
+mem:

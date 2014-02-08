@@ -1,0 +1,11 @@
+K 10
+svn:ignore
+V 8
+*.o
+*.a
+
+K 15
+tsvn:logminsize
+V 1
+5
+END

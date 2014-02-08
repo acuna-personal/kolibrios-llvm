@@ -1,0 +1,86 @@
+10
+
+dir
+4560
+svn://kolibrios.org/programs/develop/libraries/menuetlibc/src/libc/dos
+svn://kolibrios.org
+
+
+
+2011-03-06T07:42:06.076381Z
+1901
+serge
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+a494cfbc-eb01-0410-851d-a64ba20cac60
+
+compat
+dir
+
+dos
+dir
+
+errno
+dir
+
+io
+dir
+
+dos_emu
+dir
+
+Makefile
+file
+
+
+
+
+2014-02-07T23:32:39.000000Z
+370f7317e405d28f1f506cd10133f558
+2011-02-21T13:30:08.479604Z
+1882
+clevermouse
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+474
+
+dir
+dir
+
+process
+dir
+
+sys
+dir
+

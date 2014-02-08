@@ -1,0 +1,100 @@
+10
+
+dir
+4560
+svn://kolibrios.org/contrib/sdk/sources/freetype/src
+svn://kolibrios.org
+
+
+
+2013-12-15T08:09:20.212592Z
+4349
+Serge
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a494cfbc-eb01-0410-851d-a64ba20cac60
+
+truetype
+dir
+
+bzip2
+dir
+
+pfr
+dir
+
+type42
+dir
+
+bdf
+dir
+
+pshinter
+dir
+
+cff
+dir
+
+gxvalid
+dir
+
+cid
+dir
+
+tools
+dir
+
+raster
+dir
+
+psaux
+dir
+
+otvalid
+dir
+
+type1
+dir
+
+cache
+dir
+
+psnames
+dir
+
+winfonts
+dir
+
+pcf
+dir
+
+smooth
+dir
+
+gzip
+dir
+
+sfnt
+dir
+
+base
+dir
+
+autofit
+dir
+
+lzw
+dir
+

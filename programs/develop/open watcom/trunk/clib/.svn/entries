@@ -1,0 +1,97 @@
+10
+
+dir
+4560
+svn://kolibrios.org/programs/develop/open%20watcom/trunk/clib
+svn://kolibrios.org
+
+
+
+2009-12-13T00:16:34.115764Z
+1316
+serge
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a494cfbc-eb01-0410-851d-a64ba20cac60
+
+file
+dir
+
+convert
+dir
+
+environ
+dir
+
+mbyte
+dir
+
+streamio
+dir
+
+handleio
+dir
+
+h
+dir
+
+crt
+dir
+
+alias
+dir
+
+math
+dir
+
+fpu
+dir
+
+misc
+dir
+
+kanji
+dir
+
+time
+dir
+
+cgsupp
+dir
+
+search
+dir
+
+string
+dir
+
+memory
+dir
+
+direct
+dir
+
+intel
+dir
+
+heap
+dir
+
+char
+dir
+
+process
+dir
+

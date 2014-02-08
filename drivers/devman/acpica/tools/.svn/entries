@@ -1,0 +1,40 @@
+10
+
+dir
+4560
+svn://kolibrios.org/drivers/devman/acpica/tools
+svn://kolibrios.org
+
+
+
+2012-12-16T19:05:06.251036Z
+3120
+serge
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+a494cfbc-eb01-0410-851d-a64ba20cac60
+
+acpiexec
+dir
+
+acpixtract
+dir
+
+acpisrc
+dir
+
+examples
+dir
+

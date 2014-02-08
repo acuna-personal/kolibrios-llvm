@@ -1,0 +1,153 @@
+10
+
+dir
+4560
+svn://kolibrios.org/contrib/sdk/sources/Mesa/src/gallium/drivers
+svn://kolibrios.org
+
+
+
+2013-12-24T12:45:42.924694Z
+4401
+Serge
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a494cfbc-eb01-0410-851d-a64ba20cac60
+
+galahad
+dir
+
+nouveau
+dir
+
+Makefile.in
+file
+
+
+
+
+2014-02-07T23:32:52.000000Z
+e2cc45846c011421f34d28139c217e85
+2013-12-15T08:37:16.727618Z
+4358
+Serge
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+33677
+
+ilo
+dir
+
+r300
+dir
+
+nv30
+dir
+
+r600
+dir
+
+i915
+dir
+
+nv50
+dir
+
+llvmpipe
+dir
+
+softpipe
+dir
+
+identity
+dir
+
+trace
+dir
+
+rbug
+dir
+
+svga
+dir
+
+radeonsi
+dir
+
+nvc0
+dir
+
+radeon
+dir
+
+freedreno
+dir
+
+Makefile.am
+file
+
+
+
+
+2014-02-07T23:32:52.000000Z
+815feebad9bdef3c5acb61af4d8f5a5d
+2013-12-15T08:37:16.727618Z
+4358
+Serge
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2602
+
+noop
+dir
+

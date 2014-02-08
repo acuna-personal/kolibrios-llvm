@@ -1,0 +1,40 @@
+10
+
+dir
+4560
+svn://kolibrios.org/programs/develop/sdk/trunk/libGUI
+svn://kolibrios.org
+
+
+
+2009-09-26T21:40:38.018427Z
+1180
+andrew_programmer
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a494cfbc-eb01-0410-851d-a64ba20cac60
+
+Cygwin and MinGW (windows)
+dir
+
+gcc(unix)
+dir
+
+FASM
+dir
+
+MSVC++
+dir
+

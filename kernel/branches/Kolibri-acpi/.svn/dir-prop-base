@@ -1,0 +1,15 @@
+K 10
+svn:ignore
+V 41
+*.mnt
+lang.inc
+*.bat
+out.txt
+scin*
+*.obj
+
+K 15
+tsvn:logminsize
+V 1
+5
+END

@@ -1,0 +1,40 @@
+10
+
+dir
+4560
+svn://kolibrios.org/kernel/branches/Kolibri-acpi/bootloader/extended_primary_loader
+svn://kolibrios.org
+
+
+
+2013-06-08T13:00:38.947273Z
+3626
+Serge
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+a494cfbc-eb01-0410-851d-a64ba20cac60
+
+cdfs
+dir
+
+fat32
+dir
+
+fat1x
+dir
+
+after_win
+dir
+

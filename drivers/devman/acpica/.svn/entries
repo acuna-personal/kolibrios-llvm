@@ -1,0 +1,218 @@
+10
+
+dir
+4560
+svn://kolibrios.org/drivers/devman/acpica
+svn://kolibrios.org
+
+
+
+2012-12-16T19:05:06.251036Z
+3120
+serge
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+a494cfbc-eb01-0410-851d-a64ba20cac60
+
+include
+dir
+
+executer
+dir
+
+debugger
+dir
+
+os_specific
+dir
+
+dispatcher
+dir
+
+changes.txt
+file
+
+
+
+
+2014-02-07T23:32:45.000000Z
+750dfbe302ed872a54a078feeb88f827
+2011-09-20T16:54:11.023587Z
+2216
+Serge
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+463333
+
+common
+dir
+
+generate
+dir
+
+namespace
+dir
+
+parser
+dir
+
+hardware
+dir
+
+README
+file
+
+
+
+
+2014-02-07T23:32:45.000000Z
+eba076b388ff8a4fd4396d03e7512f6e
+2011-09-20T16:54:11.023587Z
+2216
+Serge
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+3356
+
+tools
+dir
+
+tests
+dir
+
+events
+dir
+
+osunixxf.c
+file
+
+
+
+
+2014-02-07T23:32:45.000000Z
+2965bccf7b4a48cce0a6af115b67c11b
+2011-09-20T16:54:11.023587Z
+2216
+Serge
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+33197
+
+resources
+dir
+
+compiler
+dir
+
+tables
+dir
+
+utilities
+dir
+
+disassembler
+dir
+
+Makefile
+file
+
+
+
+
+2014-02-07T23:32:45.000000Z
+03c1731361d1ced51c4a50c42be6c6d8
+2011-09-20T16:54:11.023587Z
+2216
+Serge
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+4992
+
