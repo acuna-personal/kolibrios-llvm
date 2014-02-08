@@ -26,7 +26,9 @@ You can contrinubute the project very simply — it's on the very beginning of t
 May the force be with it lol. 
 
 
-Contribution
+License
 ==============
+
+Source code of this project is licensed under [MIT license](http://opensource.org/licenses/MIT) (but now at the start it contains an original code of KolibriOS project and it's under [GNU GPL](http://wiki.kolibrios.org/wiki/GNU_General_Public_License))
 
 (c) [KolibriOS team & contributors](http://kolibrios.org/)
