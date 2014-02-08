@@ -18,10 +18,15 @@ Links
 * [KolibriOS source code repository](http://websvn.kolibrios.org/listing.php?repname=Kolibri+OS)
 
 
-
 Contribution
 ==============
 
 You can contrinubute the project very simply — it's on the very beginning of the project's path so all the neccessary questions are on a talk now. YouPlease feel free creating issues, talking & supplementing the code. 
 
 May the force be with it lol. 
+
+
+Contribution
+==============
+
+(c) [KolibriOS team & contributors](http://kolibrios.org/)
