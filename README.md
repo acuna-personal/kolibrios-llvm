@@ -3,7 +3,7 @@ kolibrios-llvm
 
 Kolibrios-llvm is a fork of [KolibriOS project](http://kolibrios.org/) ported to LLVM.
 
-LLVM is a tiny operating system with monolyth core mostly written in x86 asm, so it's not so portable as it would be. Now it's time to change the situation!
+KolibriOS is a tiny operating system with monolyth core mostly written in x86 asm, so it's not so portable as it would be. Now it's time to change the situation!
 
 The main goal of a project is to provide a good portability for currently absolutely nonportable Kolibri OS by translating all the x86 asm source code to a LLVM bitcode.
 
