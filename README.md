@@ -29,6 +29,6 @@ May the force be with it lol.
 License
 ==============
 
-Source code of this project is licensed under [MIT license](http://opensource.org/licenses/MIT) (but now at the start it contains an original code of KolibriOS project and it's under [GNU GPL](http://wiki.kolibrios.org/wiki/GNU_General_Public_License))
+Source code of this project is licensed under [GNU GPL](http://wiki.kolibrios.org/wiki/GNU_General_Public_License) (because it contains an original code of KolibriOS project and it's under [GNU GPL](http://wiki.kolibrios.org/wiki/GNU_General_Public_License)) but it also partially ccntains third-party software tha is under [MIT License](http://opensource.org/licenses/MIT).
 
 (c) [KolibriOS team & contributors](http://kolibrios.org/)
